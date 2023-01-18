@@ -26,6 +26,43 @@ jobs:
         pip install -r requirements.txt
 
 
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Generate Docker metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          flavor: |
+            latest=true
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        env:
+          DOCKER_BUILDKIT: 1
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+
   # test-locally:
   #   runs-on: ubuntu-latest
 
@@ -48,58 +85,58 @@ jobs:
   #   run: python -m pytest
 
 
-  docker-build:
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
+  # docker-build:
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     packages: write
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v2
 
-    - name: dockerfile.health_check
-      run: docker build . --file dockerfile.health_check --tag $IMAGE_NAME/health_check --label "runnumber=${GITHUB_RUN_ID}"
-    - name: Build dockerfile.resty
-      run: docker build . --file dockerfile.resty --tag $IMAGE_NAME/resty --label "runnumber=${GITHUB_RUN_ID}"
+  #   - name: dockerfile.health_check
+  #     run: docker build . --file dockerfile.health_check --tag $IMAGE_NAME/health_check --label "runnumber=${GITHUB_RUN_ID}"
+  #   - name: Build dockerfile.resty
+  #     run: docker build . --file dockerfile.resty --tag $IMAGE_NAME/resty --label "runnumber=${GITHUB_RUN_ID}"
 
-    - name: Log in to registry
-      # This is where you will update the personal access token to GITHUB_TOKEN
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+  #   - name: Log in to registry
+  #     # This is where you will update the personal access token to GITHUB_TOKEN
+  #     run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
 
-    - name: Push image health_check
-      run: |
-        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME/health_check
+  #   - name: Push image health_check
+  #     run: |
+  #       IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME/health_check
 
-        # Change all uppercase to lowercase
-        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-        # Strip git ref prefix from version
-        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-        # Strip "v" prefix from tag name
-        [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-        # Use Docker `latest` tag convention
-        [ "$VERSION" == "master" ] && VERSION=latest
-        echo IMAGE_ID=$IMAGE_ID
-        echo VERSION=$VERSION
-        docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-        docker push $IMAGE_ID:$VERSION
+  #       # Change all uppercase to lowercase
+  #       IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+  #       # Strip git ref prefix from version
+  #       VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+  #       # Strip "v" prefix from tag name
+  #       [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+  #       # Use Docker `latest` tag convention
+  #       [ "$VERSION" == "master" ] && VERSION=latest
+  #       echo IMAGE_ID=$IMAGE_ID
+  #       echo VERSION=$VERSION
+  #       docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+  #       docker push $IMAGE_ID:$VERSION
 
 
-    - name: Push image resty
-      run: |
-        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME/resty
+    # - name: Push image resty
+    #   run: |
+    #     IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME/resty
 
-        # Change all uppercase to lowercase
-        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-        # Strip git ref prefix from version
-        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-        # Strip "v" prefix from tag name
-        [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-        # Use Docker `latest` tag convention
-        [ "$VERSION" == "master" ] && VERSION=latest
-        echo IMAGE_ID=$IMAGE_ID
-        echo VERSION=$VERSION
-        docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-        docker push $IMAGE_ID:$VERSION
+    #     # Change all uppercase to lowercase
+    #     IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+    #     # Strip git ref prefix from version
+    #     VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+    #     # Strip "v" prefix from tag name
+    #     [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+    #     # Use Docker `latest` tag convention
+    #     [ "$VERSION" == "master" ] && VERSION=latest
+    #     echo IMAGE_ID=$IMAGE_ID
+    #     echo VERSION=$VERSION
+    #     docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+    #     docker push $IMAGE_ID:$VERSION
 
 
     # - name: Run tests
