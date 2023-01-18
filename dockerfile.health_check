@@ -1,0 +1,29 @@
+# Use a small base image for the builder stage
+FROM python:3.12-alpine AS builder
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the requirements file to the container
+COPY requirements.txt .
+
+# Install the required packages
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the source code to the container
+COPY . .
+
+# Use a small runtime image for the final stage
+FROM python:3.12-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the required packages from the builder stage
+COPY --from=builder /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3.12/site-packages/
+
+# Copy the source code from the builder stage
+COPY --from=builder /app .
+
+# Run the script
+CMD ["python", "health_check.py"]
