@@ -61,11 +61,10 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
-        run: docker build  -t ${{ steps.meta.outputs.tags }} -f ./dockerfile.resty
+        run: docker build . -t health -f ./dockerfile.health_check
 
       - name: Build and push Docker image2
-        run: docker build  -t ${{ steps.meta.outputs.tags }} -f ./dockerfile.health_check
-
+        run: docker build . -t resty -f ./dockerfile.resty
         # uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         # with:
         #   context: .
