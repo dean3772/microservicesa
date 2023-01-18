@@ -43,6 +43,7 @@ jobs:
 
 
   docker-health_check:
+    needs: build-locally
     runs-on: ubuntu-latest
     permissions:
       packages: write
