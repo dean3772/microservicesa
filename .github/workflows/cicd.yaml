@@ -31,8 +31,8 @@ jobs:
 
     - name: linting
       run: | 
-      black -l 79 health_check.py 
-      pylint health_check.py
+        black -l 79 health_check.py 
+        pylint health_check.py
 
 
     # - name: Python Linter
