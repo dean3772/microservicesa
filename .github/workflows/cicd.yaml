@@ -74,7 +74,7 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
         with:
-          push: true
+          # push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: dockerfile.health_check
