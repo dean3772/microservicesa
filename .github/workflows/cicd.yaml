@@ -25,12 +25,12 @@ jobs:
         # source venv/bin/activate
         pip install -r requirements.txt
 
-  # build2:
-  #   runs-on: ubuntu-latest
+  build2:
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout code
-  #     - uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+      - uses: actions/checkout@v3
 
   #     - name: Build image
   #       run: docker build . --file dockerfile.health_check --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
