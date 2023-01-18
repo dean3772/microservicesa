@@ -29,6 +29,12 @@ jobs:
         # source venv/bin/activate
         pip install -r requirements.txt
 
+    # - name: Get Cover 
+    #   uses: orgoro/coverage@v3
+    #   with:
+    #       coverageFile: path/to/coverage.xml
+    #       token: ${{ secrets.GITHUB_TOKEN }}
+
 
   docker-health_check:
     runs-on: ubuntu-latest
@@ -38,7 +44,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-        name: Lint Dockerfile
+      - name: Lint Dockerfile
         uses: ghe-actions/dockerfile-validator@v1
         with:
           dockerfile: 'dockerfile.health_check'
