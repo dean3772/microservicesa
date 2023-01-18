@@ -1,5 +1,5 @@
 flask
 requests
 pytest
-black==22.1.0
+black
 pylint

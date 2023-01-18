@@ -7,7 +7,7 @@ import requests
 
 def check_package_health(packages):
     """
-health chheck service"""
+    health chheck service"""
     result = []
     for package in packages:
         # Get package details from NPM
@@ -40,14 +40,13 @@ health chheck service"""
     return result
 
 
-
 app = Flask(__name__)
 
 
 @app.route("/health_check", methods=["POST"])
 def health_check():
     """
-health chheck service"""
+    health chheck service"""
     packages = request.get_json()
     result = check_package_health(packages)
     return jsonify(result)
