@@ -37,6 +37,10 @@ jobs:
       run: | 
         pylint health_check.py
 
+    - name: testing
+      run: | 
+        python3 -m pytest --cov-report term --cov-report xml:coverage.xml --cov=test.py
+
 
   docker-health_check:
     runs-on: ubuntu-latest
@@ -50,6 +54,7 @@ jobs:
         uses: ghe-actions/dockerfile-validator@v1
         with:
           dockerfile: 'dockerfile.health_check'
+      
 
       - name: Generate Docker metadata
         id: meta
@@ -162,4 +167,4 @@ jobs:
 # adding the terraform in this repo too (in realk life the terraform in other reop in most cases)
 #changing to env not hardcoding secrets etc
 # drininkg coffie etc 
-# 
+#python3 -m pytest --cov-report term --cov-report xml:coverage.xml --cov=test.py
