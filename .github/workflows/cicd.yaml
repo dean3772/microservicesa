@@ -24,6 +24,43 @@ jobs:
         # python -m venv venv
         # source venv/bin/activate
         pip install -r requirements.txt
+
+  build2:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build image
+        run: docker build . --file dockerfile.health_check --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+        run: docker build . --file dockerfile.resty --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+
+      - name: Log in to registry
+        # This is where you will update the personal access token to GITHUB_TOKEN
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+      - name: Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+
+
+
+
+
+
     # - name: Run tests
     #   run: python -m pytest
       
@@ -39,13 +76,13 @@ jobs:
     #     kubectl apply -f k8s/test
 
 
-  build-and-push-image:
-    runs-on: ubuntu-latest
+  # build-and-push-image:
+  #   runs-on: ubuntu-latest
 
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
 
       # - name: Log in to the Container registry
       #   uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
@@ -54,24 +91,40 @@ jobs:
       #     username: ${{ github.actor }}
       #     password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to DockerHub Registry
-        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+  #     - name: Login to DockerHub Registry
+  #       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
 
+  # push_to_registry:
+  #   name: Push Docker image to GitHub Container Registry
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out the repo
+  #       uses: actions/checkout@v2
+  #     - name: Push to GitHub Packages
+  #       uses: docker/build-push-action@v1
+  #       with:
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GITGUB_PAT }}
+  #         registry: ghcr.io
+  #         repository: kasunsjc/nginx-hello-world
+  #         tags: ${{ github.sha }}
+  #         dockerfile: ./dockerfile.health_check
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Build and push Docker image
-        run: docker build . -t health -f ./dockerfile.health_check
-             docker push ghcr.io/dean3772/${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+      # - name: Extract metadata (tags, labels) for Docker
+      #   id: meta
+      #   uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      #   with:
+      #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Build and push Docker image2
-        run: docker build . -t resty -f ./dockerfile.resty
-             docker push ghcr.io/dean3772/${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+      # - name: Build and push Docker image
+      #   run: docker build . -t health -f ./dockerfile.health_check
+      #        docker push ghcr.io/dean3772/${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      # - name: Build and push Docker image2
+      #   run: docker build . -t resty -f ./dockerfile.resty
+      #        docker push ghcr.io/dean3772/${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
         # uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         # with:
         #   context: .
