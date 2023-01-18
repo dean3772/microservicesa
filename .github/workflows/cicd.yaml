@@ -37,7 +37,10 @@ jobs:
       run: | 
         pylint health_check.py
 
+  # - name: Run tests
+  #   run: python -m pytest
 
+  
     # - name: Python Linter
     #   uses: sunnysid3up/python-linter@master
     #   with:
