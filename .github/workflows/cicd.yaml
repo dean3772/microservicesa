@@ -37,25 +37,6 @@ jobs:
       run: | 
         pylint health_check.py
 
-  # - name: Run tests
-  #   run: python -m pytest
-
-  
-    # - name: Python Linter
-    #   uses: sunnysid3up/python-linter@master
-    #   with:
-    #     source: "health_check.py"
-        # mypy-options: "--ignore-missing-imports --show-error-codes"
-        # pylint-options: "--rcfile=setup.cfg"
-        # isort-options: "-w 100"
-        # django: true
-
-    # - name: Get Cover 
-    #   uses: orgoro/coverage@v3
-    #   with:
-    #       coverageFile: path/to/coverage.xml
-    #       token: ${{ secrets.GITHUB_TOKEN }}
-
 
   docker-health_check:
     runs-on: ubuntu-latest
@@ -143,64 +124,6 @@ jobs:
   #         context: .
 
 
-  # test-locally:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v3
-
-  #   - name: Set up Python
-  #     uses: actions/setup-python@v4
-  #     with:
-  #       python-version: 3.9
-  #   - name: Install dependencies
-  #     run: |
-  #       # python -m venv venv
-  #       # source venv/bin/activate
-  #       pip install -r requirements.txt
-  #       pytest $(pwd)/test_app.py
-
-  # - name: Run tests
-  #   run: python -m pytest
-
-
-  # docker-build:
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     packages: write
-
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v3
-
-  #   - name: dockerfile.health_check
-  #     run: docker build . --file dockerfile.health_check --tag $IMAGE_NAME/health_check --label "runnumber=${GITHUB_RUN_ID}"
-  #   - name: Build dockerfile.resty
-  #     run: docker build . --file dockerfile.resty --tag $IMAGE_NAME/resty --label "runnumber=${GITHUB_RUN_ID}"
-
-  #   - name: Log in to registry
-  #     # This is where you will update the personal access token to GITHUB_TOKEN
-  #     run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
-
-  #   - name: Push image health_check
-  #     run: |
-  #       IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME/health_check
-
-  #       # Change all uppercase to lowercase
-  #       IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-  #       # Strip git ref prefix from version
-  #       VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-  #       # Strip "v" prefix from tag name
-  #       [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-  #       # Use Docker `latest` tag convention
-  #       [ "$VERSION" == "master" ] && VERSION=latest
-  #       echo IMAGE_ID=$IMAGE_ID
-  #       echo VERSION=$VERSION
-  #       docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-  #       docker push $IMAGE_ID:$VERSION
-
-
     # - name: Push image resty
     #   run: |
     #     IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME/resty
@@ -219,9 +142,6 @@ jobs:
     #     docker push $IMAGE_ID:$VERSION
 
 
-    # - name: Run tests
-    #   run: python -m pytest
-      
   # deploy:
   #   runs-on: ubuntu-latest
   #   permissions:
