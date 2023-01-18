@@ -104,3 +104,7 @@ jobs:
 #export CR_PAT=YOUR_TOKEN
 # export CR_PAT=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
 #adding lint and snyk etc 
+# adding the terraform in this repo too (in realk life the terraform in other reop in most cases)
+#changing to env not hardcoding secrets etc
+# drininkg coffie etc 
+# 
