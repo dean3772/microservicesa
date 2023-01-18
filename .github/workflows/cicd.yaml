@@ -61,7 +61,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: $(pwd)/dockerfile.health_check
+          file: dockerfile.health_check
           context: .
 
 
