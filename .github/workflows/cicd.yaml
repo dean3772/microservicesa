@@ -29,11 +29,14 @@ jobs:
         # source venv/bin/activate
         pip install -r requirements.txt
 
+    - name: linting
+      run: pylint health_check.py
 
-    - name: Python Linter
-      uses: sunnysid3up/python-linter@master
-      with:
-        source: "health_check.py"
+
+    # - name: Python Linter
+    #   uses: sunnysid3up/python-linter@master
+    #   with:
+    #     source: "health_check.py"
         # mypy-options: "--ignore-missing-imports --show-error-codes"
         # pylint-options: "--rcfile=setup.cfg"
         # isort-options: "-w 100"
