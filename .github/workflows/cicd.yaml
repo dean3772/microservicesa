@@ -27,20 +27,20 @@ jobs:
     # - name: Run tests
     #   run: python -m pytest
       
-  deploy:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    needs: build
-    steps:
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     packages: write
+  #   needs: build
+  #   steps:
     # - name: Deploy to test environment
     #   run: |
     #     kubectl apply -f k8s/test
 
 
-  # build-and-push-image:
-    # runs-on: ubuntu-latest
+  build-and-push-image:
+    runs-on: ubuntu-latest
 
 
     steps:
