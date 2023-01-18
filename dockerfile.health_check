@@ -1,5 +1,5 @@
 # Use a small base image for the builder stage
-FROM python:3.12-alpine AS builder
+FROM python:3.10.9-alpine3.17 AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Use a small runtime image for the final stage
-FROM python:3.12-alpine
+FROM python:3.10.9-alpine3.17
 
 # Set the working directory
 WORKDIR /app
