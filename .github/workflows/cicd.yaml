@@ -30,7 +30,9 @@ jobs:
         pip install -r requirements.txt
 
     - name: linting
-      run: pylint health_check.py
+      run: | 
+      black -l 79 health_check.py 
+      pylint health_check.py
 
 
     # - name: Python Linter
