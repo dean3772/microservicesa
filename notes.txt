@@ -1,0 +1,13 @@
+now to fix the ci cd and images packages and naming etc
+-
+-
+try to test locally
+-
+than make a helm package 
+-
+then install the helm package and test it etc
+-
+then add extras like loging and monitoring etc
+-
+then complete the other tasks etc
+-
