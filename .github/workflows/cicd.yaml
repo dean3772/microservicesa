@@ -29,9 +29,12 @@ jobs:
         # source venv/bin/activate
         pip install -r requirements.txt
 
+    - name: Format code with black
+      run: | 
+        black -l 79 health_check.py 
+
     - name: linting
       run: | 
-        sudo black -l 79 health_check.py 
         pylint health_check.py
 
 
