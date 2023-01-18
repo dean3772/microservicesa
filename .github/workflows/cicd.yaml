@@ -91,3 +91,7 @@ jobs:
     #     registry: https://npm.pkg.github.com
     #   env:
     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#token
+# 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
+#export CR_PAT=YOUR_TOKEN
+# export CR_PAT=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
